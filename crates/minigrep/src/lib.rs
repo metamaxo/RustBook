@@ -1,42 +1,25 @@
-#[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+use std::error::Error;
+use std::fs;
+
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
 }
+impl Config {
+    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+        if args.len() < 3 {
+            return Err("not enough arguments");
+        }
+        let query = args[1].clone();
+        let file_path = args[2].clone();
 
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+        Ok(Config { query, file_path })
     }
 }
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
 
-    #[test]
-    fn larrged_can_hold_smaller() {
-        let larger = Rectangle {
-            width: 8,
-            height: 7,
-        };
-        let smaller = Rectangle {
-            width: 5,
-            height: 1,
-        };
+    println!("With text:\n{contents}");
 
-        assert!(larger.can_hold(&smaller));
-    }
-    #[test]
-    fn smaller_cannot_hold_larger() {
-        let larger = Rectangle {
-            width: 8,
-            height: 7,
-        };
-        let smaller = Rectangle {
-            width: 5,
-            height: 1,
-        };
-
-        assert!(!smaller.can_hold(&larger));
-    }
+    Ok(())
 }
