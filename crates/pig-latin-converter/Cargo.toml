@@ -1,0 +1,7 @@
+[package]
+name = "rust-book-pig-latin-converter"
+edition.workspace = true
+version.workspace = true
+
+[dependencies]
+
